@@ -19,7 +19,7 @@ function App() {
   // Similar to componentDidUpdate
   useEffect(() => {
     if (state.sendRequest) {
-      axios.post(`http://127.0.0.1:5000/getnextmove`, { state })
+      axios.post(`https://my-third-app-dot-my-project-9894-281203.nn.r.appspot.com/getnextmove`, { state })
         .then(res => {
           let data = res.data;
           setState(data);
