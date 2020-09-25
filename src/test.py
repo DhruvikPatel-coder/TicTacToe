@@ -1,71 +1,5 @@
-import json
 import numpy as np
 import copy
-
-from flask import Flask, request
-from flask_cors import CORS
-
-app = Flask(__name__)  # initialize flask
-# Set the environment to development in order to enable hot reload
-Flask.env = 'development'
-CORS(app)
-
-
-@app.route('/getnextmove', methods=['POST'])
-def getnextmove():
-    data = bytes(request.data).decode('UTF_8')
-    data_json = json.loads(data)
-    grid = data_json['state']['current']
-    grid_copy = copy.deepcopy(grid)
-    gird_2d = np.reshape(grid_copy, (3, 3))
-    status, moves = evaluate(grid)
-
-    if (isBoardFull(grid_copy)):
-        response_value = {
-            "history": data_json['state']['history'],
-            "stepNumber": data_json['state']['stepNumber'],
-            "current": grid,
-            "status": "Game tied!!",
-            "lastHighlight": data_json['state']['lastHighlight'],
-            "sendRequest": False,
-            "moves": []
-        }
-    elif status:
-        response_value = {
-            "history": data_json['state']['history'],
-            "stepNumber": data_json['state']['stepNumber'],
-            "current": grid,
-            "status": status + " Won!!",
-            "lastHighlight": data_json['state']['lastHighlight'],
-            "sendRequest": False,
-            "moves": moves
-        }
-    else:
-        updated_move = getBestMove(grid_copy, gird_2d)
-        grid[updated_move] = 'X'
-        response_value = {
-            "history": data_json['state']['history'],
-            "stepNumber": data_json['state']['stepNumber'],
-            "current": grid,
-            "status": 'Your Turn "O"',
-            "lastHighlight": updated_move,
-            "sendRequest": False,
-            "moves": []
-        }
-
-    status, moves = evaluate(grid)
-    if status:
-        response_value = {
-            "history": data_json['state']['history'],
-            "stepNumber": data_json['state']['stepNumber'],
-            "current": grid,
-            "status": status + " Won!!",
-            "lastHighlight": data_json['state']['lastHighlight'],
-            "sendRequest": False,
-            "moves": moves
-        }
-
-    return response_value
 
 
 def getBestMove(grid, grid_2d):
@@ -154,4 +88,7 @@ def isBoardFull(grid):
 
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', debug=True)
+    grid = ['X', None, None, None, 'O', None, 'O', None, None]
+    gird_2d = np.reshape(grid, (3, 3))
+    move = getBestMove(grid, gird_2d)
+    print("The most optimal move is " + str(move))

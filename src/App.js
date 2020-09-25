@@ -53,15 +53,30 @@ function App() {
       'Go to game start';
     return (
       <li key={Math.random()} style={{ margin: "5px" }}>
-        <button className="btn btn-outline-dark btn-sm" onClick={() => jumpTo(move, state.history)}>{desc}</button>
+        <button
+          className="btn btn-outline-dark btn-sm"
+          onClick={() => jumpTo(move, state.history)}
+        >{desc}</button>
       </li>
     );
   });
 
   function jumpTo(step, history) {
-    let temp = {};
-    Object.assign(temp, state, { stepNumber: step, history: history.slice(0, step + 1) });
-    setState(temp);
+    console.log("Coming here");
+    console.log("History");
+    console.log(history);
+    console.log(step);
+    console.log(history[step])
+    setState({
+      history: history.slice(0, step + 1),
+      stepNumber: step,
+      current: history[step],
+      status: 'Your turn "O"',
+      lastHighlight: "",
+      sendRequest: false,
+      moves: []
+    });
+    console.log(state.current);
   }
 
   return (
