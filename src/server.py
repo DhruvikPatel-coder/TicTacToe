@@ -41,7 +41,7 @@ def getBestMove(grid, grid_2d):
                 grid_2d[i][j] = 'X'
                 grid[i + j] = 'X'
                 # Compute evaluation function for this
-                move_value = miniMax(grid, grid_2d, 0, True)
+                move_value = miniMax(grid, grid_2d, True)
                 # reset to original value
                 grid_2d[i][j] = None
                 grid[i + j] = None
@@ -54,7 +54,7 @@ def getBestMove(grid, grid_2d):
     return row + col
 
 
-def miniMax(grid, grid_2d, depth, isMaximizingPlayer):
+def miniMax(grid, grid_2d, isMaximizingPlayer):
     score = evaluate(grid)
 
     if score == "O":
@@ -71,8 +71,8 @@ def miniMax(grid, grid_2d, depth, isMaximizingPlayer):
                 if grid_2d[row][column] is None:
                     grid_2d[row][column] = 'X'
                     grid[row + column] = 'X'
-                    best = max(best, miniMax(grid, grid_2d,
-                                             depth + 1, not isMaximizingPlayer))
+                    best = max(best, miniMax(
+                        grid, grid_2d, not isMaximizingPlayer))
                     grid_2d[row][column] = None
                     grid[row + column] = None
         return best
@@ -83,8 +83,8 @@ def miniMax(grid, grid_2d, depth, isMaximizingPlayer):
                 if grid_2d[row][column] is None:
                     grid_2d[row][column] = 'O'
                     grid[row + column] = 'O'
-                    best = min(best, miniMax(grid, grid_2d,
-                                             depth + 1, not isMaximizingPlayer))
+                    best = min(best, miniMax(
+                        grid, grid_2d, not isMaximizingPlayer))
                     grid_2d[row][column] = None
                     grid[row + column] = None
         return best
