@@ -4,11 +4,19 @@ import Square from "./Square";
 
 export default function Board(props) {
     function renderSquare(i) {
+        let color = "white";
+        if (props.lastHighlight === i) {
+            color = "green";
+        }
+        if (props.winnerHighlight.includes(i)) {
+            color = "red"
+        }
         return (
             <Square
                 key={i}
                 value={props.squares[i]}
                 onClick={() => props.onClick(i)}
+                color={color}
             />
         );
     }

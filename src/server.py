@@ -18,40 +18,67 @@ def getnextmove():
     grid = data_json['state']['current']
     grid_copy = copy.deepcopy(grid)
     gird_2d = np.reshape(grid_copy, (3, 3))
+    status, moves = evaluate(grid)
 
-    updated_move = getBestMove(grid_copy, gird_2d)
-    grid[updated_move] = 'X'
-    response_value = {
-        "current": grid,
-        "status": 'Your Turn "O"',
-        "lastHighlight": updated_move,
-        "sendRequest": False,
-        "moves": {}
-    }
+    if (isBoardFull(grid_copy)):
+        response_value = {
+            "current": grid,
+            "status": "Game tied!!",
+            "lastHighlight": data_json['state']['lastHighlight'],
+            "sendRequest": False,
+            "moves": []
+        }
+    elif status:
+        response_value = {
+            "current": grid,
+            "status": status + " Won!!",
+            "lastHighlight": data_json['state']['lastHighlight'],
+            "sendRequest": False,
+            "moves": moves
+        }
+    else:
+        updated_move = getBestMove(grid_copy, gird_2d)
+        grid[updated_move] = 'X'
+        response_value = {
+            "current": grid,
+            "status": 'Your Turn "O"',
+            "lastHighlight": updated_move,
+            "sendRequest": False,
+            "moves": []
+        }
+
+    status, moves = evaluate(grid)
+    if status:
+        response_value = {
+            "current": grid,
+            "status": status + " Won!!",
+            "lastHighlight": data_json['state']['lastHighlight'],
+            "sendRequest": False,
+            "moves": moves
+        }
     return response_value
 
 
 def getBestMove(grid, grid_2d):
-    best_value = -1000
-    row = -1
-    col = -1
+    best_value = -500
+    final_index = -1
     for i in range(len(grid_2d)):
         for j in range(len(grid_2d[i])):
             if grid_2d[i][j] is None:
                 grid_2d[i][j] = 'X'
-                grid[i + j] = 'X'
+                index = ((i)*3) + j
+                grid[index] = 'X'
                 # Compute evaluation function for this
-                move_value = miniMax(grid, grid_2d, True)
+                move_value = miniMax(grid, grid_2d, False)
                 # reset to original value
                 grid_2d[i][j] = None
-                grid[i + j] = None
+                grid[index] = None
 
                 if move_value > best_value:
-                    row = i
-                    col = j
+                    final_index = index
                     best_value = move_value
 
-    return row + col
+    return final_index
 
 
 def miniMax(grid, grid_2d, isMaximizingPlayer):
@@ -70,11 +97,12 @@ def miniMax(grid, grid_2d, isMaximizingPlayer):
             for column in range(len(grid_2d[row])):
                 if grid_2d[row][column] is None:
                     grid_2d[row][column] = 'X'
-                    grid[row + column] = 'X'
+                    index = ((row)*3) + column
+                    grid[index] = 'X'
                     best = max(best, miniMax(
                         grid, grid_2d, not isMaximizingPlayer))
                     grid_2d[row][column] = None
-                    grid[row + column] = None
+                    grid[index] = None
         return best
     else:
         best = 1000
@@ -82,11 +110,12 @@ def miniMax(grid, grid_2d, isMaximizingPlayer):
             for column in range(len(grid_2d[row])):
                 if grid_2d[row][column] is None:
                     grid_2d[row][column] = 'O'
-                    grid[row + column] = 'O'
+                    index = ((row)*3) + column
+                    grid[index] = 'O'
                     best = min(best, miniMax(
                         grid, grid_2d, not isMaximizingPlayer))
                     grid_2d[row][column] = None
-                    grid[row + column] = None
+                    grid[index] = None
         return best
 
 
@@ -104,8 +133,8 @@ def evaluate(grid):
     for row in lines:
         [a, b, c] = row
         if (grid[a] and grid[a] == grid[b] and grid[b] == grid[c]):
-            return grid[a]
-    return ""
+            return grid[a], [a, b, c]
+    return "", []
 
 
 def isBoardFull(grid):

@@ -9,7 +9,7 @@ function App() {
     status: 'Your turn "O"',
     lastHighlight: '',
     sendRequest: false,
-    moves: {}
+    moves: []
   });
 
   // Similar to componentDidUpdate
@@ -19,22 +19,26 @@ function App() {
         .then(res => {
           let data = res.data;
           console.log(data);
-          setState(data)
+          setState(data);
         });
     }
   }, [state]);
 
   function handleClick(i) {
     const squares = state.current;
+    if (state.status === 'Game tied!!') {
+      return
+    }
     squares[i] = 'O';
     setState({
       current: squares,
       status: 'Bots Turn "X"',
       lastHighlight: i,
       sendRequest: true,
-      moves: {}
+      moves: []
     });
   }
+
 
   return (
     <div className="game">
