@@ -1,0 +1,4 @@
+service: my-third-app
+entrypoint: gunicorn -b:$PORT server:app 
+env: standard
+runtime: python38
