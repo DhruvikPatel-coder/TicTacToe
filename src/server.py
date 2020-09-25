@@ -22,6 +22,8 @@ def getnextmove():
 
     if (isBoardFull(grid_copy)):
         response_value = {
+            "history": data_json['state']['history'],
+            "stepNumber": data_json['state']['stepNumber'],
             "current": grid,
             "status": "Game tied!!",
             "lastHighlight": data_json['state']['lastHighlight'],
@@ -30,6 +32,8 @@ def getnextmove():
         }
     elif status:
         response_value = {
+            "history": data_json['state']['history'],
+            "stepNumber": data_json['state']['stepNumber'],
             "current": grid,
             "status": status + " Won!!",
             "lastHighlight": data_json['state']['lastHighlight'],
@@ -40,6 +44,8 @@ def getnextmove():
         updated_move = getBestMove(grid_copy, gird_2d)
         grid[updated_move] = 'X'
         response_value = {
+            "history": data_json['state']['history'],
+            "stepNumber": data_json['state']['stepNumber'],
             "current": grid,
             "status": 'Your Turn "O"',
             "lastHighlight": updated_move,
@@ -50,12 +56,15 @@ def getnextmove():
     status, moves = evaluate(grid)
     if status:
         response_value = {
+            "history": data_json['state']['history'],
+            "stepNumber": data_json['state']['stepNumber'],
             "current": grid,
             "status": status + " Won!!",
             "lastHighlight": data_json['state']['lastHighlight'],
             "sendRequest": False,
             "moves": moves
         }
+
     return response_value
 
 

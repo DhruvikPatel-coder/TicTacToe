@@ -5,6 +5,10 @@ import axios from 'axios';
 
 function App() {
   let [state, setState] = useState({
+    history: [{
+      squares: Array(9).fill(null),
+    }],
+    stepNumber: 0,
     current: Array(9).fill(null),
     status: 'Your turn "O"',
     lastHighlight: '',
@@ -18,7 +22,6 @@ function App() {
       axios.post(`http://127.0.0.1:5000/getnextmove`, { state })
         .then(res => {
           let data = res.data;
-          console.log(data);
           setState(data);
         });
     }
@@ -26,11 +29,16 @@ function App() {
 
   function handleClick(i) {
     const squares = state.current;
-    if (state.status === 'Game tied!!') {
+    if (state.status === 'Game tied!!' || state.status === 'O Won!!' || state.status === 'X Won!!') {
       return
     }
     squares[i] = 'O';
+    const history = state.history
     setState({
+      history: history.concat([{
+        squares: squares
+      }]),
+      stepNumber: history.length,
       current: squares,
       status: 'Bots Turn "X"',
       lastHighlight: i,
@@ -39,6 +47,22 @@ function App() {
     });
   }
 
+  let moves = state.history.map((step, move) => {
+    const desc = move ?
+      'Go to move #' + move :
+      'Go to game start';
+    return (
+      <li key={Math.random()} style={{ margin: "5px" }}>
+        <button className="btn btn-outline-dark btn-sm" onClick={() => jumpTo(move, state.history)}>{desc}</button>
+      </li>
+    );
+  });
+
+  function jumpTo(step, history) {
+    let temp = {};
+    Object.assign(temp, state, { stepNumber: step, history: history.slice(0, step + 1) });
+    setState(temp);
+  }
 
   return (
     <div className="game">
@@ -51,6 +75,7 @@ function App() {
         <div><b>You are player "X" and player "O" is a bot, enjoy playing.
         Click the button below in order to retive the game back to specific move!!</b></div>
         <div style={{ marginBottom: "10px" }}>{state.status}</div>
+        <ol>{moves}</ol>
       </div>
     </div>
   );
