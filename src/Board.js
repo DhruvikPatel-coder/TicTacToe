@@ -4,12 +4,12 @@ import Square from "./Square";
 
 export default function Board(props) {
     function renderSquare(i) {
-        let color = "white";
+        let color = "";
         if (props.lastHighlight === i) {
-            color = "green";
+            color = "#6600EE";
         }
         if (props.winnerHighlight.includes(i)) {
-            color = "red"
+            color = "#77EE00";
         }
         return (
             <Square

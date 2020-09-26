@@ -1,0 +1,58 @@
+.infoContainer {
+  display: grid;
+  grid-template-columns: 33% 33% 33%;
+  text-align: center;
+}
+
+.infoBox {
+  background-color: #b3ffb3;
+  color: black;
+  padding: 10px;
+  border: 5px solid transparent;
+}
+
+#resetButton {
+  background-color: #008CBA;
+  color: white;
+  font-size: 16px;
+  border: 2px solid #008CBA;
+}
+
+#resetButton:hover {
+  background-color: white;
+  color: #008CBA;
+}
+
+.yellow {
+  background-color: #ffff67;
+}
+
+.orangeBorder {
+  border: 3px solid #b3ffb3;
+}
+
+.intro-div {
+    margin-top: 20px;
+    margin-bottom: 20px;
+}
+
+.status-div {
+    margin: 20px;
+}
+
+.title {
+    font-family: 'Lilita One', cursive;
+    font-size: xx-large;
+}
+
+.content {
+    font-family: 'Montserrat', sans-serif;
+    font-size: larger;
+}
+
+@media only screen and (max-width: 480px) {
+  .content {
+    font-family: 'Montserrat', sans-serif;
+    font-size: revert;
+  }
+}
