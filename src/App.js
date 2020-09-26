@@ -3,12 +3,8 @@ import './App.css';
 import Board from './Board'
 import axios from 'axios';
 
-function App() {
+export default function App() {
   let [state, setState] = useState({
-    history: [{
-      squares: Array(9).fill(null),
-    }],
-    stepNumber: 0,
     current: Array(9).fill(null),
     status: 'Your turn "O"',
     lastHighlight: '',
@@ -16,10 +12,18 @@ function App() {
     moves: []
   });
 
+  let [stateHistory, setHistory] = useState({
+    history: [{
+      squares: Array(9).fill(null),
+    }],
+    stepNumber: 0,
+  })
+
   // Similar to componentDidUpdate
   useEffect(() => {
     if (state.sendRequest) {
-      axios.post(`https://my-third-app-dot-my-project-9894-281203.nn.r.appspot.com/getnextmove`, { state })
+      // https://my-third-app-dot-my-project-9894-281203.nn.r.appspot.com/getnextmove
+      axios.post(`http://127.0.0.1:5000/getnextmove`, { state })
         .then(res => {
           let data = res.data;
           setState(data);
@@ -27,27 +31,39 @@ function App() {
     }
   }, [state]);
 
+  // // Similar to componentDidUpdate
+  useEffect(() => {
+    let step = stateHistory.stepNumber;
+    let updated_move = stateHistory.history[step].squares;
+    let temp = {};
+    Object.assign(temp, state, { current: updated_move });
+    setState(temp);
+  }, [stateHistory]);
+
   function handleClick(i) {
     const squares = state.current;
     if (state.status === 'Game tied!!' || state.status === 'O Won!!' || state.status === 'X Won!!') {
       return
     }
     squares[i] = 'O';
-    const history = state.history
+    const history = stateHistory.history
     setState({
-      history: history.concat([{
-        squares: squares
-      }]),
-      stepNumber: history.length,
       current: squares,
       status: 'Bots Turn "X"',
       lastHighlight: i,
       sendRequest: true,
       moves: []
     });
+
+    setHistory({
+      history: history.concat([{
+        squares: squares
+      }]),
+      stepNumber: history.length,
+    })
   }
 
-  let moves = state.history.map((step, move) => {
+  let moves = stateHistory.history.map((step, move) => {
     const desc = move ?
       'Go to move #' + move :
       'Go to game start';
@@ -55,28 +71,20 @@ function App() {
       <li key={Math.random()} style={{ margin: "5px" }}>
         <button
           className="btn btn-outline-dark btn-sm"
-          onClick={() => jumpTo(move, state.history)}
+          onClick={() => jumpTo(move, stateHistory.history)}
         >{desc}</button>
       </li>
     );
   });
 
-  function jumpTo(step, history) {
-    console.log("Coming here");
-    console.log("History");
-    console.log(history);
-    console.log(step);
-    console.log(history[step])
-    setState({
-      history: history.slice(0, step + 1),
-      stepNumber: step,
-      current: history[step],
-      status: 'Your turn "O"',
-      lastHighlight: "",
-      sendRequest: false,
-      moves: []
+  function jumpTo(step, my_history) {
+    setHistory({
+      history: my_history.slice(0, step + 1),
+      stepNumber: step
     });
-    console.log(state.current);
+    let temp = {};
+    Object.assign(temp, state, { lastHighlight: "" });
+    setState(temp);
   }
 
   return (
@@ -95,5 +103,3 @@ function App() {
     </div>
   );
 }
-
-export default App;
