@@ -42,9 +42,18 @@ export default function App() {
 
   function handleClick(i) {
     const squares = state.current;
-    if (state.status === 'Game tied!!' || state.status === 'O Won!!' || state.status === 'X Won!!') {
+    if (state.status === 'Game tied!!' ||
+      state.status === 'O Won!!' ||
+      state.status === 'X Won!!') {
       return
     }
+    if (squares[i] !== null) {
+      return
+    }
+    if (setState.status === 'Bots Turn "X"') {
+      return
+    }
+
     squares[i] = 'O';
     const history = stateHistory.history
     setState({
@@ -83,7 +92,7 @@ export default function App() {
       stepNumber: step
     });
     let temp = {};
-    Object.assign(temp, state, { lastHighlight: "" });
+    Object.assign(temp, state, { lastHighlight: "", moves: [] });
     setState(temp);
   }
 
