@@ -8,7 +8,7 @@ from flask_cors import CORS
 app = Flask(__name__)  # initialize flask
 # Set the environment to development in order to enable hot reload
 Flask.env = 'development'
-CORS(app)
+CORS(app, resources={r"/getnextmove": {"origins": "*"}})
 
 
 @app.route('/getnextmove', methods=['POST'])
