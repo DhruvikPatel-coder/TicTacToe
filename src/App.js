@@ -34,7 +34,7 @@ export default function App() {
     if (squares[i] !== null) {
       return
     }
-    if (setState.status === 'Bots Turn "X"') {
+    if (state.status === 'Bots Turn "X"') {
       return
     }
 
